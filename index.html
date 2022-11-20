@@ -7,6 +7,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/animate.css">
+  <link rel="stylesheet" href="pluings/toastr/toastr.min.css">
   
   <title>Frontend Mentor | Interactive rating component</title>
 
@@ -45,6 +46,7 @@
     </p>
 
     <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="pluings/toastr/toastr.min.js"></script>
 
     <script>
       $(document).ready(function(){
@@ -68,18 +70,78 @@
           }
         })
 
+        /**
+         * @function toastrFire display a notification isung the Toastr pluing
+         *
+         * @param msg contiene los valores title: titulo de la notificacion, notification:
+         * descripcion del mensaje, y type: que es el tipo de notificacion, (ej success,o error)
+         * msg = {
+         *     title        : string,
+         *     notification : string,
+         *     type         : string
+         * }
+         */
+        function toastrFire( msg ) {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "progressBar": true,
+                "preventDuplicates": true,
+                "positionClass": "toast-top-center",
+                "onclick": null,
+                "showDuration": "400",
+                "hideDuration": "500",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "swing",
+                "showMethod": "show",
+                "hideMethod": "slideUp",
+            }
+            // Display a toast, with type [msg.type],message [msg.notification] and title [msg.title]
+            switch (msg.type) {
+                case "success":
+                    toastr.options.onHidden=function () {  window.location.reload();}
+                    toastr.success(msg.notification, msg.title);
+                    break;
+                case "info":
+                    toastr.info(msg.notification, msg.title);
+                    break;
+                case "warning":
+                    toastr.warning(msg.notification, msg.title);
+                    break;
+                default:
+                    toastr.error(msg.notification, msg.title);
+            }
+
+        }
+
         $('#sumit').click(function(){
+
           let rating = $('#rating')
           let thanks = $('#thanks')
           
-          let value = ($('.selected').text() !== "") ? $('.selected').text(): 0 
+          let value = ($('.selected').text() !== "") ? $('.selected').text(): 0
+
+          if (value == 0) {
+            const msg= {
+                      "title"         : "Error",
+                      "notification"   : "Please select a Number",
+                      "type"          : "error",
+                  };
+
+            toastrFire (msg);
+            return
+          }
+
           $('#rating-value').text(value)
-          console.log(value);
+
           $('.card').removeClass('fadeOut')
           $('.card').removeClass('fadeInRight')
 
           $(rating).toggleClass('fadeOut')
           $(thanks).toggleClass('fadeInRight')
+
           $('.card').toggleClass('active')
           $('.selected').removeClass('selected')
 
@@ -90,11 +152,13 @@
 
         let rating = $('#rating')
         let thanks = $('#thanks')
+
         $('.card').removeClass('fadeOut')
         $('.card').removeClass('fadeInRight')
 
         $(thanks).toggleClass('fadeOut')
         $(rating).toggleClass('fadeInRight')
+        
         $('.card').toggleClass('active')
       })
 
