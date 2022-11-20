@@ -54,7 +54,7 @@ main{
     display: block;
 }
 #rating > * + *{
-    margin-top: 1.25rem;
+    margin-top: 1.5rem;
 }
 
 #rating .stars span,
